@@ -4,7 +4,7 @@ const dotenv = require('dotenv');
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
-const MongoStore = require('connect-mongo').default;
+const MongoStore = require('connect-mongo').default || require('connect-mongo');
 const connectDB = require('./config/db');
 
 dotenv.config();
@@ -25,7 +25,7 @@ app.use(
     secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI || 'mongodb+srv://bedereja12_db_user:LezzoIbEV5X0eekL@cluster0.xxxxx.mongodb.net/e-commerce?retryWrites=true&w=majority' }),
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
