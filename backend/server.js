@@ -25,7 +25,7 @@ app.use(
     secret: process.env.SESSION_SECRET || 'secret',
     resave: false,
     saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI || 'mongodb+srv://bedereja12_db_user:LezzoIbEV5X0eekL@cluster0.xxxxx.mongodb.net/e-commerce?retryWrites=true&w=majority' }),
+    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
