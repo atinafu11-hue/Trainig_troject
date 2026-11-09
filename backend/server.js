@@ -1,13 +1,12 @@
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
+//const dotenv = require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
-const MongoStore = require('connect-mongo').default || require('connect-mongo');
+const MongoStore = require('connect-mongo').default;
 const connectDB = require('./config/db');
-
-dotenv.config();
+//dotenv.config({ path: path.join(__dirname, '.env') });
 connectDB();
 
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -15,7 +14,9 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL || '*', credentials: true }));
+app.use(cors({ origin: process.env.CLIENT_URL,
+credentials: true 
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -23,18 +24,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     secret: process.env.SESSION_SECRET || 'secret',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: process.env.MONGO_URI }),
+    resave: false,              // Add this line
+    saveUninitialized: false,   // Add this line
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGO_URI
+    }),
     cookie: {
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
+      sameSite: 'none',
     },
   })
 );
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', require('./routes/authRoutes'));
