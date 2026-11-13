@@ -13,8 +13,7 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
 const app = express();
 
 const allowedOrigins = [
-  "https://trainig-troject.vercel.app/",
-  process.env.CLIENT_URL
+  "https://trainig-troject.vercel.app/"|| process.env.CLIENT_URL
 ].filter(Boolean);;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://trainig-troject.vercel.app/api/:path*"
+    }
+  ]
+}
