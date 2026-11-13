@@ -13,19 +13,19 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
 const app = express();
 
 const allowedOrigins = [
-  "https://trainig-troject.vercel.app/"|| process.env.CLIENT_URL
-].filter(Boolean);;
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+  "https://trainig-project.vercel.app", // Fixed typo: 'project' (no trailing slash)
+  process.env.CLIENT_URL                // Add env variable (comma separated)
+].filter(Boolean);                      // Removes any undefined values if env is missing
 
-// Session (Technical Paper §V.C)
+// 2. Setup CORS (This MUST come BEFORE express.json)
 app.use(
   cors({
     origin: allowedOrigins,
     credentials: true,
   })
 );
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', require('./routes/authRoutes'));
