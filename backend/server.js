@@ -1,12 +1,10 @@
 const express = require('express');
 const cors = require('cors');
-//const dotenv = require('dotenv').config({ path: require('path').join(__dirname, '.env') });
 const path = require('path');
 const fs = require('fs');
 const session = require('express-session');
-const MongoStore = require('connect-mongo').default;
+const MongoStore = require('connect-mongo');
 const connectDB = require('./config/db');
-//dotenv.config({ path: path.join(__dirname, '.env') });
 connectDB();
 
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -14,29 +12,21 @@ if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir);
 
 const app = express();
 
-app.use(cors({ origin: process.env.CLIENT_URL,
-credentials: true 
-}));
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.CLIENT_URL
+].filter(Boolean);;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Session (Technical Paper §V.C)
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET || 'secret',
-    resave: false,              // Add this line
-    saveUninitialized: false,   // Add this line
-    store: MongoStore.create({
-      mongoUrl: process.env.MONGO_URI
-    }),
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
-    },
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
   })
 );
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use('/api/auth', require('./routes/authRoutes'));
